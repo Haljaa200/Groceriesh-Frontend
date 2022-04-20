@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationPin } from "@fortawesome/free-solid-svg-icons";
 import GoogleMap from "google-map-react";
 import moment from 'moment';
+import TimePicker from "react-time-picker";
 
 class OrderDetails extends Form {
   state = {
