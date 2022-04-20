@@ -4,8 +4,6 @@ import { getOrder, deliverOrder } from "../services/ordersService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationPin } from "@fortawesome/free-solid-svg-icons";
 import GoogleMap from "google-map-react";
-import moment from 'moment';
-import TimePicker from "react-time-picker";
 
 class OrderDetails extends Form {
   state = {
@@ -22,7 +20,6 @@ class OrderDetails extends Form {
     errors: {},
     mapZoom: 17,
     showMap: null,
-    delivery_time: moment()
   };
 
   async populateOrder() {
@@ -53,13 +50,8 @@ class OrderDetails extends Form {
     };
   }
 
-  handleChangeDeliveryTime = m => {
-    const timestamp = m.valueOf()
-    this.setState({ delivery_time: timestamp });
-  };
-
   onDeliver = async () => {
-    await deliverOrder(this.state.data._id, this.state.delivery_time);
+    await deliverOrder(this.state.data._id, this.state.delivery_time_planned);
     this.props.history.push("/orders");
   };
 
@@ -83,8 +75,6 @@ class OrderDetails extends Form {
           </ul>
 
           <h5 style={{marginTop: "30px", marginBottom: "30px"}}>Total Price: {this.state.data.total_price}</h5>
-
-          <TimePicker onChange={this.handleChangeDeliveryTime} value={this.state.delivery_time.format("HH:mm")} />
 
           <button
             onClick={this.onDeliver}
