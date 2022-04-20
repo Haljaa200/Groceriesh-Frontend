@@ -83,7 +83,7 @@ class OrderDetails extends Form {
           </button>
         </div>
 
-        <div  className="col-2" style={{ height: '100vh' }}>
+        <div className="col-2" style={{ height: '100vh' }}>
           <GoogleMap
             bootstrapURLKeys={{ key: 'AIzaSyCBgPe7SxxGV3gE8PTSBgozl-TUn57S2Og' }}
             defaultCenter={{ lat: this.state.data.delivery_latitude, lng: this.state.data.delivery_longitude }}
