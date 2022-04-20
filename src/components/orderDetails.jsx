@@ -57,7 +57,7 @@ class OrderDetails extends Form {
   render() {
     return (
       <div className="row">
-        <div className="col-3">
+        <div className="col-2">
           <h1>Order Details</h1>
           <h5>Deliver to {this.state.data.delivery_address}</h5>
           <h5>Time to Deliver: { new Date(this.state.data.delivery_time_planned).toString() }</h5>
@@ -83,7 +83,7 @@ class OrderDetails extends Form {
           </button>
         </div>
 
-        <div style={{ height: '100vh' }}>
+        <div  className="col-2" style={{ height: '100vh' }}>
           <GoogleMap
             bootstrapURLKeys={{ key: 'AIzaSyCBgPe7SxxGV3gE8PTSBgozl-TUn57S2Og' }}
             defaultCenter={{ lat: this.state.data.delivery_latitude, lng: this.state.data.delivery_longitude }}
