@@ -15,6 +15,7 @@ class OrderDetails extends Form {
       items: [],
       total_price: 0.0,
       delivery_time_planned: 0,
+      delivered: null,
       notes: "",
     },
     errors: {},
@@ -76,15 +77,17 @@ class OrderDetails extends Form {
 
           <h5 style={{marginTop: "30px", marginBottom: "30px"}}>Total Price: {this.state.data.total_price}</h5>
 
-          <button
+          {this.state.data.delivered === false && (
+            <button
             onClick={this.onDeliver}
             className="btn btn-primary"
-          >
-            Deliver
-          </button>
+            >
+              Deliver
+            </button>
+          )}
         </div>
 
-        { this.state.showMap && (
+        {this.state.showMap && (
           <div className="col" style={{ height: '50vh' }}>
             <GoogleMap
               bootstrapURLKeys={{ key: 'AIzaSyCBgPe7SxxGV3gE8PTSBgozl-TUn57S2Og' }}
