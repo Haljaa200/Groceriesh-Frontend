@@ -26,8 +26,6 @@ class App extends Component {
 
   render() {
     const { user } = this.state;
-    let homeRoute = "/login";
-    if (user) homeRoute = "/items";
 
     return (
       <React.Fragment>
@@ -47,7 +45,7 @@ class App extends Component {
             <ProtectedRoute path="/orders" component={Orders} />
             <ProtectedRoute path="/category/:id" component={CategoryForm} />
             <Route path="/not-found" component={NotFound} />
-            <Redirect from="/" exact to={homeRoute} />
+            <Redirect from="/" exact to="/items" />
             <Redirect to="/not-found" />
           </Switch>
         </main>

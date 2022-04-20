@@ -4,6 +4,8 @@ import { getOrder, deliverOrder } from "../services/ordersService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationPin } from "@fortawesome/free-solid-svg-icons";
 import GoogleMap from "google-map-react";
+import moment from 'moment';
+import InputMoment from "input-moment";
 
 class OrderDetails extends Form {
   state = {
@@ -18,14 +20,16 @@ class OrderDetails extends Form {
       notes: "",
     },
     errors: {},
-    mapZoom: 17
+    mapZoom: 17,
+    showMap: null,
+    delivery_time: moment()
   };
 
   async populateOrder() {
     try {
       const orderId = this.props.match.params.id;
       const { data: order } = await getOrder(orderId);
-      this.setState({ data: this.mapToViewModel(order.data.order) });
+      this.setState({ data: this.mapToViewModel(order.data.order), showMap: true });
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
         this.props.history.replace("/not-found");
@@ -49,15 +53,20 @@ class OrderDetails extends Form {
     };
   }
 
+  handleChangeDeliveryTime = m => {
+    const timestamp = m.valueOf()
+    this.setState({ delivery_time: timestamp });
+  };
+
   onDeliver = async () => {
-    await deliverOrder(this.state.data._id, this.state.data.delivery_time_planned);
+    await deliverOrder(this.state.data._id, this.state.delivery_time);
     this.props.history.push("/orders");
   };
 
   render() {
     return (
       <div className="row">
-        <div className="col-2">
+        <div className="col">
           <h1>Order Details</h1>
           <h5>Deliver to {this.state.data.delivery_address}</h5>
           <h5>Time to Deliver: { new Date(this.state.data.delivery_time_planned).toString() }</h5>
@@ -68,12 +77,14 @@ class OrderDetails extends Form {
                 key={item["name"]}
                 className="list-group-item"
               >
-                {`${item["name"]}: ${item["price"]}       (${item["quantity"]})`}
+                {`${item["name"]}, Price: ${item["price"]}       (Quantity: ${item["quantity"]})`}
               </li>
             ))}
           </ul>
 
           <h5 style={{marginTop: "30px", marginBottom: "30px"}}>Total Price: {this.state.data.total_price}</h5>
+
+          <TimePicker onChange={this.handleChangeDeliveryTime} value={this.state.delivery_time.format("HH:mm")} />
 
           <button
             onClick={this.onDeliver}
@@ -83,20 +94,24 @@ class OrderDetails extends Form {
           </button>
         </div>
 
-        <div className="col-2" style={{ height: '100vh' }}>
-          <GoogleMap
-            bootstrapURLKeys={{ key: 'AIzaSyCBgPe7SxxGV3gE8PTSBgozl-TUn57S2Og' }}
-            defaultCenter={{ lat: this.state.data.delivery_latitude, lng: this.state.data.delivery_longitude }}
-            defaultZoom={this.state.mapZoom}
-          >
-            <FontAwesomeIcon
-              icon={faLocationPin}
-              lat={59.955413}
-              lng={30.337844}
-              text="Delivery Location"
-            />
-          </GoogleMap>
-      </div>
+        { this.state.showMap && (
+          <div className="col" style={{ height: '50vh' }}>
+            <GoogleMap
+              bootstrapURLKeys={{ key: 'AIzaSyCBgPe7SxxGV3gE8PTSBgozl-TUn57S2Og' }}
+              defaultCenter={{ lat: this.state.data.delivery_latitude, lng: this.state.data.delivery_longitude }}
+              defaultZoom={this.state.mapZoom}
+            >
+              <FontAwesomeIcon
+                icon={faLocationPin}
+                size="4x"
+                lat={this.state.data.delivery_latitude}
+                lng={this.state.data.delivery_longitude}
+                text="Delivery Location"
+              />
+            </GoogleMap>
+          </div>
+        )}
+
       </div>
     );
   }
